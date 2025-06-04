@@ -53,9 +53,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Increment must be a boolean" });
       }
 
-      await storage.updateArticleLikes(id, increment);
       const article = await storage.getArticle(id);
-      res.json({ likes: article?.likes || 0 });
+      if (!article) {
+        return res.status(404).json({ message: "Article not found" });
+      }
+
+      await storage.updateArticleLikes(id, increment);
+      const updated = await storage.getArticle(id);
+      res.json({ likes: updated!.likes });
     } catch (error) {
       res.status(500).json({ message: "Failed to update likes" });
     }
@@ -71,9 +76,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Increment must be a boolean" });
       }
 
-      await storage.updateArticleDislikes(id, increment);
       const article = await storage.getArticle(id);
-      res.json({ dislikes: article?.dislikes || 0 });
+      if (!article) {
+        return res.status(404).json({ message: "Article not found" });
+      }
+
+      await storage.updateArticleDislikes(id, increment);
+      const updated = await storage.getArticle(id);
+      res.json({ dislikes: updated!.dislikes });
     } catch (error) {
       res.status(500).json({ message: "Failed to update dislikes" });
     }
