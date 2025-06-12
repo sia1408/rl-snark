@@ -1,0 +1,11 @@
+{
+  "title": "Your Article Title",
+  "excerpt": "Brief summary for the news feed",
+  "content": "Full article content with ## headings and > quotes",
+  "category": "Goal Misgeneralization",
+  "severity": "critical",
+  "company": "Company Name",
+  "location": "Optional location",
+  "reporter": "Optional reporter name",
+  "readTime": "Optional read time"
+}
