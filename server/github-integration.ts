@@ -50,9 +50,15 @@ export async function handleGitHubWebhook(req: Request, res: Response) {
     const articlesAdded: string[] = [];
 
     for (const commit of payload.commits) {
-      const articleFiles = commit.added?.filter(file => 
+      const addedFiles = commit.added?.filter(file =>
         file.startsWith('articles/') && file.endsWith('.json')
       ) || [];
+
+      const modifiedFiles = commit.modified?.filter(file =>
+        file.startsWith('articles/') && file.endsWith('.json')
+      ) || [];
+
+      const articleFiles = [...addedFiles, ...modifiedFiles];
 
       for (const filePath of articleFiles) {
         try {
@@ -69,14 +75,14 @@ export async function handleGitHubWebhook(req: Request, res: Response) {
 
           await storage.createArticle(articleToInsert);
           articlesAdded.push(validatedData.title);
-          
+
         } catch (error) {
           console.error(`Failed to process article file ${filePath}:`, error);
         }
       }
     }
 
-    res.status(200).json({ 
+    res.status(200).json({
       message: 'Webhook processed successfully',
       articlesAdded: articlesAdded.length,
       titles: articlesAdded
